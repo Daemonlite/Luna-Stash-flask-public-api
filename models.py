@@ -80,3 +80,23 @@ class Comments(db.model):
             'updated_at': self.updated_at
 
         }
+    
+class Photos(db.Model):
+   id = db.Column(db.Integer,primary_key = True)
+   descr = db.Column(db.String(200),nulable=False)
+   image_url = db.Column(db.String(200),nulable=False)
+   created_at = db.Column(db.DateTime, default=datetime.utcnow)
+   updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+   def __init__(self,descr,image_url):
+       self.descr = descr
+       self.image_url = image_url
+
+   def to_dict(self):
+       return{
+           'id':self.id,
+           'descr':self.descr,
+           'image_url':self.image_url,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+       }
