@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, User,Posts
+from models import db, User,Posts,Comments
 from flask_cors import CORS
 import bcrypt
 import cloudinary
@@ -162,6 +162,47 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     return jsonify({'message': 'Post deleted successfully'})
+
+
+#comment routes 
+
+@app.route('/comments', methods=['POST'])
+def create_comment():
+    post_id = request.json['post_id']
+    username = request.json['username']
+    userprofile = request.json['userprofile']
+    content = request.json['content']
+    comment = Comments(post_id=post_id, username=username, userprofile=userprofile, content=content)
+    db.session.add(comment)
+    db.session.commit()
+    return jsonify(comment.to_dict())
+
+@app.route('/comments/<int:id>', methods=['PUT'])
+def update_comment(id):
+    comment = Comments.query.get_or_404(id)
+    comment.post_id = request.json.get('post_id', comment.post_id)
+    comment.username = request.json.get('username', comment.username)
+    comment.userprofile = request.json.get('userprofile', comment.userprofile)
+    comment.content = request.json.get('content', comment.content)
+    db.session.commit()
+    return jsonify(comment.to_dict())
+
+@app.route('/comments/<int:id>', methods=['DELETE'])
+def delete_comment(id):
+    comment = Comments.query.get_or_404(id)
+    db.session.delete(comment)
+    db.session.commit()
+    return '', 204
+
+@app.route('/comments/<int:id>')
+def get_comment(id):
+    comment = Comments.query.get_or_404(id)
+    return jsonify(comment.to_dict())
+
+@app.route('/comments')
+def get_comments():
+    comments = Comments.query.all()
+    return jsonify([comment.to_dict() for comment in comments])
 
 if __name__ == '__main__':
     with app.app_context():  
