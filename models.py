@@ -53,3 +53,30 @@ class Posts(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+
+class Comments(db.model):
+    id = db.Column(db.Integer,primary_key = True)
+    post_id = db.Column(db.Integer,nullable = False)
+    username = db.Column(db.String(200),nulable=False)
+    userprofile = db.Column(db.String(200),nulable=False)
+    content = db.Column(db.String(200),nulable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self,post_id,username,userprofile,content):
+        self.post_id = post_id
+        self.username = username
+        self.userprofile = userprofile
+        self.content = content
+
+    def to_dict(self):
+        return{
+            'id':self.id,
+            'post_id':self.post_id,
+            'username':self.username,
+            'userprofile':self.userprofile,
+            'content':self.content,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+
+        }
