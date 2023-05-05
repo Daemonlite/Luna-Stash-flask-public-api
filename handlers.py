@@ -124,6 +124,7 @@ def get_posts():
     result = []
     for post in all_posts:
         result.append(post.to_dict())
+    print(len(all_posts))
     return jsonify(result)
 
 @app.route('/posts/<int:post_id>', methods=['GET'])
