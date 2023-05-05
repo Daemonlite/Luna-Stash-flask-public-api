@@ -54,12 +54,12 @@ class Posts(db.Model):
             'updated_at': self.updated_at
         }
 
-class Comments(db.model):
+class Comments(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     post_id = db.Column(db.Integer,nullable = False)
-    username = db.Column(db.String(200),nulable=False)
-    userprofile = db.Column(db.String(200),nulable=False)
-    content = db.Column(db.String(200),nulable=False)
+    username = db.Column(db.String(200),nullable=False)
+    userprofile = db.Column(db.String(200),nullable=False)
+    content = db.Column(db.String(200),nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -83,8 +83,8 @@ class Comments(db.model):
     
 class Photos(db.Model):
    id = db.Column(db.Integer,primary_key = True)
-   descr = db.Column(db.String(200),nulable=False)
-   image_url = db.Column(db.String(200),nulable=False)
+   descr = db.Column(db.String(200),nullable=False)
+   image_url = db.Column(db.String(200),nullable=False)
    created_at = db.Column(db.DateTime, default=datetime.utcnow)
    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
