@@ -30,3 +30,26 @@ class User(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+
+class Posts(db.Model):
+    id = db.Column(db.Integer,primary_key = True)
+    user_id = db.Column(db.Integer,nullable = False)
+    title = db.Column(db.String(255),nullable=False)
+    body = db.Column(db.String(400))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self,user_id,title,body):
+        self.user_id = user_id
+        self.title = title
+        self.body = body
+
+    def to_dict(self):
+        return{
+            'id':self.id,
+            'user_id':self.user_id,
+            'title':self.title,
+            'body':self.body,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
