@@ -100,3 +100,26 @@ class Photos(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
        }
+   
+class Todos(db.Model):
+    id = db.Column(db.Integer,primary_key = True)
+    user_id = db.Column(db.Integer,nullable = False)
+    task = db.Column(db.String(255),nullable=False)
+    completed = db.Column(db.Boolean,default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self,user_id,task,completed):
+        self.user_id = user_id
+        self.task = task
+        self.completed = completed
+
+    def to_dict(self):
+        return{
+            'id':self.id,
+            'user_id':self.user_id,
+            'task':self.task,
+            'completed':self.completed,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
