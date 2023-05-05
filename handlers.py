@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, User
+from models import db, User,Posts
 from flask_cors import CORS
 import bcrypt
 import cloudinary
@@ -29,8 +29,9 @@ cloudinary.config(
             api_key='872169569198661',
             api_secret='AC9O0BiDuGNyfF5iipr-cBl9Gvo'
         )
-# user  routes
 
+
+# user  routes
 @app.route('/users', methods=["GET"])
 def get_users():
     users = User.query.all()
@@ -116,6 +117,50 @@ def update_user_info(id):
         return jsonify({'error': 'user not found.'}), 404
 
 
+# post routes
+@app.route('/posts', methods=['GET'])
+def get_posts():
+    all_posts = Posts.query.all()
+    result = []
+    for post in all_posts:
+        result.append(post.to_dict())
+    return jsonify(result)
+
+@app.route('/posts/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    post = Posts.query.get(post_id)
+    if not post:
+        return jsonify({'error': 'Post not found'})
+    return jsonify(post.to_dict())
+
+@app.route('/posts', methods=['POST'])
+def create_post():
+    data = request.get_json()
+    new_post = Posts(user_id=data['user_id'], title=data['title'], body=data['body'])
+    db.session.add(new_post)
+    db.session.commit()
+    return jsonify({'message': 'Post created successfully'})
+
+@app.route('/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    post = db.session.query(Posts).get(post_id)
+    if not post:
+        return jsonify({'error': 'Post not found'})
+    data = request.get_json()
+    post.user_id = data['user_id']
+    post.title = data['title']
+    post.body = data['body']
+    db.session.commit()
+    return jsonify({'message': 'Post updated successfully'})
+
+@app.route('/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    post = db.session.query(Posts).get(post_id)
+    if not post:
+        return jsonify({'error': 'Post not found'})
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({'message': 'Post deleted successfully'})
 
 if __name__ == '__main__':
     with app.app_context():  
