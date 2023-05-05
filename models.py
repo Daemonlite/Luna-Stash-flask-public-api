@@ -126,6 +126,7 @@ class Todos(db.Model):
     
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    image = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=True)
     price = db.Column(db.Float, nullable=False)
@@ -133,11 +134,12 @@ class Product(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
 
-    def __init__(self,name,description,price,stock):
+    def __init__(self,name,description,price,stock,image):
         self.name = name
         self.description = description
         self.price = price
         self.stock = stock
+        self.image = image
     
     def to_dict(self):
         return{
@@ -145,5 +147,6 @@ class Product(db.Model):
             'name': self.name,
             'description':  self.description,
             'price':self.price,
-            'stock':self.stock
+            'stock':self.stock,
+            'image':self.image
         }
