@@ -35,7 +35,9 @@ cloudinary.config(
 def get_users():
     users = User.query.all()
     user_list = [user.to_dict() for user in users]
+    print(len(users))
     return jsonify(users=user_list)
+
 
 @app.route('/user/<int:user_id>', methods=["GET"])
 def user_profile(user_id):
