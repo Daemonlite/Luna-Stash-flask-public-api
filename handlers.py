@@ -179,7 +179,7 @@ def create_comment():
 
 @app.route('/comments/<int:id>', methods=['PUT'])
 def update_comment(id):
-    comment = Comments.query.get_or_404(id)
+    comment = b.session.query(Comments).get(id)
     comment.post_id = request.json.get('post_id', comment.post_id)
     comment.username = request.json.get('username', comment.username)
     comment.userprofile = request.json.get('userprofile', comment.userprofile)
@@ -189,14 +189,14 @@ def update_comment(id):
 
 @app.route('/comments/<int:id>', methods=['DELETE'])
 def delete_comment(id):
-    comment = Comments.query.get_or_404(id)
+    comment = b.session.query(Comments).get(id)
     db.session.delete(comment)
     db.session.commit()
     return '', 204
 
 @app.route('/comments/<int:id>')
 def get_comment(id):
-    comment = Comments.query.get_or_404(id)
+    comment = b.session.query(Comments).get(id)
     return jsonify(comment.to_dict())
 
 @app.route('/comments')
