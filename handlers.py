@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, User,Posts,Comments
+from models import db, User,Posts,Comments,Photos
 from flask_cors import CORS
 import bcrypt
 import cloudinary
@@ -194,15 +194,25 @@ def delete_comment(id):
     db.session.commit()
     return '', 204
 
-@app.route('/comments/<int:id>')
+@app.route('/comments/<int:id>',methods=['GET'])
 def get_comment(id):
     comment = db.session.query(Comments).get(id)
     return jsonify(comment.to_dict())
 
-@app.route('/comments')
+@app.route('/comments',methods=['GET'])
 def get_comments():
     comments = Comments.query.all()
     return jsonify([comment.to_dict() for comment in comments])
+
+
+@app.route('/photos',methods=['GET'])
+def get_Photos():
+    images = Photos.query.all()
+    image_list = [img.to_dict() for img in images]
+    print(len(images))
+    return jsonify(users=image_list)
+
+
 
 if __name__ == '__main__':
     with app.app_context():  
