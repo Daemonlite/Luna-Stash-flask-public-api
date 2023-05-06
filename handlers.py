@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, User,Posts,Comments,Photos,Todos
+from models import db, User,Posts,Comments,Photos,Todos,Product
 from flask_cors import CORS
 import bcrypt
 import cloudinary
@@ -290,6 +290,53 @@ def update_todo_by_id(id):
 def delete_todo_by_id(id):
     todo = Todos.query.get_or_404(id)
     db.session.delete(todo)
+    db.session.commit()
+    return '', 204
+
+
+#Products
+# Get all Products
+@app.route('/products', methods=['GET'])
+def get_all_products():
+    products = Product.query.all()
+    return jsonify([product.to_dict() for product in products])
+
+# Create Product
+@app.route('/products', methods=['POST'])
+def create_product():
+    data = request.json
+    product = Product(name=data['name'], description=data.get('description'), 
+    price=data['price'], stock=data['stock'], image=data['image'])
+    db.session.add(product)
+    db.session.commit()
+    return jsonify(product.to_dict()), 201
+
+
+
+# Get Product by ID
+@app.route('/products/<int:id>', methods=['GET'])
+def get_product_by_id(id):
+    product = Product.query.get_or_404(id)
+    return jsonify(product.to_dict())
+
+# Update Product by ID
+@app.route('/products/<int:id>', methods=['PUT'])
+def update_product_by_id(id):
+    product = Product.query.get_or_404(id)
+    data = request.json
+    product.name = data.get('name', product.name)
+    product.description = data.get('description', product.description)
+    product.price = data.get('price', product.price)
+    product.stock = data.get('stock', product.stock)
+    product.image = data.get('image', product.image)
+    db.session.commit()
+    return jsonify(product.to_dict())
+
+# Delete Product by ID
+@app.route('/products/<int:id>', methods=['DELETE'])
+def delete_product_by_id(id):
+    product = Product.query.get_or_404(id)
+    db.session.delete(product)
     db.session.commit()
     return '', 204
 
