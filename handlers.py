@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, User,Posts,Comments,Photos
+from models import db, User,Posts,Comments,Photos,Todos
 from flask_cors import CORS
 import bcrypt
 import cloudinary
@@ -248,6 +248,51 @@ def delete_photo(id):
    db.session.delete(photo)
    db.session.commit()
    return '', 204
+
+#Todos
+
+@app.route('/todos', methods=['POST'])
+def create_todo():
+    data = request.json
+    user_id = data['user_id']
+    task = data['task']
+    completed = data.get('completed', False)
+
+    todo = Todos(user_id=user_id, task=task, completed=completed)
+    db.session.add(todo)
+    db.session.commit()
+
+    return jsonify(todo.to_dict()), 201
+
+@app.route('/todos', methods=['GET'])
+def get_todos():
+    todos = Todos.query.all()
+    return jsonify([todo.to_dict() for todo in todos])
+
+# Get Todo by ID
+@app.route('/todos/<int:id>', methods=['GET'])
+def get_todo_by_id(id):
+    todo = Todos.query.get_or_404(id)
+    return jsonify(todo.to_dict())
+
+# Update Todo by ID
+@app.route('/todos/<int:id>', methods=['PUT'])
+def update_todo_by_id(id):
+    todo = Todos.query.get_or_404(id)
+    data = request.json
+    todo.task = data.get('task', todo.task)
+    todo.completed = data.get('completed', todo.completed)
+    db.session.commit()
+    return jsonify(todo.to_dict())
+
+# Delete Todo by ID
+@app.route('/todos/<int:id>', methods=['DELETE'])
+def delete_todo_by_id(id):
+    todo = Todos.query.get_or_404(id)
+    db.session.delete(todo)
+    db.session.commit()
+    return '', 204
+
 
 if __name__ == '__main__':
     with app.app_context():  
