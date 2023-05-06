@@ -210,9 +210,44 @@ def get_Photos():
     images = Photos.query.all()
     image_list = [img.to_dict() for img in images]
     print(len(images))
-    return jsonify(users=image_list)
+    return jsonify(photos=image_list)
 
 
+
+# Define the routes
+@app.route('/photos', methods=['GET'])
+def get_photos():
+   photos = Photos.query.all()
+   return jsonify([photo.to_dict() for photo in photos])
+
+@app.route('/photos/<int:id>', methods=['GET'])
+def get_photo(id):
+   photo = db.session.query(Photos).get(id)
+   return jsonify(photo.to_dict())
+
+@app.route('/photos', methods=['POST'])
+def create_photo():
+   data = request.get_json()
+   photo = Photos(descr=data['descr'], image_url=data['image_url'])
+   db.session.add(photo)
+   db.session.commit()
+   return jsonify(photo.to_dict()), 201
+
+@app.route('/photos/<int:id>', methods=['PUT'])
+def update_photo(id):
+   photo = db.session.query(Photos).get(id)
+   data = request.get_json()
+   photo.descr = data.get('descr', photo.descr)
+   photo.image_url = data.get('image_url', photo.image_url)
+   db.session.commit()
+   return jsonify(photo.to_dict())
+
+@app.route('/photos/<int:id>', methods=['DELETE'])
+def delete_photo(id):
+   photo = Photos.query.get_or_404(id)
+   db.session.delete(photo)
+   db.session.commit()
+   return '', 204
 
 if __name__ == '__main__':
     with app.app_context():  
