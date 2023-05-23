@@ -1,0 +1,6 @@
+cloudinary
+cloudinary.uploader
+bcrypt
+flask_cors
+flask
+flask_sqlalchemy
