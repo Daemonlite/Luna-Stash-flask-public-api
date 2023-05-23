@@ -1,5 +1,4 @@
 cloudinary
-cloudinary.uploader
 bcrypt
 flask_cors
 flask
